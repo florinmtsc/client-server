@@ -1,6 +1,7 @@
 package clientserverchat;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -9,27 +10,27 @@ public class CClient {
 
     String hostName;
     int portNumber;
-    boolean close = false;
     String response;
+    Socket echoSocket;
+    PrintWriter out;
+    BufferedReader in;
     
-    public CClient(String hostName, String portNumber) {
+    public CClient(String hostName, String portNumber) throws IOException {
         this.hostName = hostName;
         this.portNumber = Integer.parseInt(portNumber);
+        
+        this.echoSocket = new Socket(this.hostName, this.portNumber);
+        this.out = new PrintWriter(echoSocket.getOutputStream(), true);
+        this.in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
     }
     
-    public String connect(String text) {
-        try (
-            Socket echoSocket = new Socket(this.hostName, this.portNumber);
-            PrintWriter out = new PrintWriter(echoSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(echoSocket.getInputStream()));
-        ) {
-            if (text != "") {
-                out.println(text);
-                this.response = in.readLine();
-            }
-        } catch(Exception ex) {
-            System.out.println("client error");
+    public String connect(String text) throws IOException {
+
+        if (text != "") {
+            out.println(text);
+            this.response = in.readLine();
         }
+
         return "";
     };
     
@@ -37,5 +38,12 @@ public class CClient {
         String response = this.response;
         this.response = "";
         return response;
+    }
+    
+    public void closeConnection() throws IOException
+    {
+    	this.echoSocket.close();
+    	this.out.close();
+    	this.in.close();
     }
 };

@@ -10,73 +10,60 @@ import java.net.Socket;
 public class CServer {
     
     public int portNumber;
+    ServerSocket serverSocket;
+    PrintWriter out;
+    BufferedReader in;
     
-    public CServer(String portNumber) {
-        this.portNumber = Integer.parseInt(portNumber);
-    }
+    public CServer() {}
     
-    public void connect() {
+    public void connect(int portNumber) throws IOException {
         System.out.println("Server IN");
-        try (
-                ServerSocket serverSocket = new ServerSocket(portNumber);
-                Socket clientSocket = serverSocket.accept();
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                ) {
-            String inputLine, outputLine;
 
-            while ((inputLine = in.readLine()) != null) {
-                out.println("Client said: " + inputLine + " and this is the server responding");
-                System.out.println("Client: " + inputLine);
-            }
-        } catch(Exception exc) {
-            System.out.println("Something went wrong");
+    	this.serverSocket = new ServerSocket(portNumber);
+        Socket clientSocket = serverSocket.accept();
+        this.out = new PrintWriter(clientSocket.getOutputStream(), true);
+        this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        
+        String inputLine, outputLine;
+
+        while ((inputLine = in.readLine()) != null) {
+            out.println("Client said: " + inputLine + " and this is the server responding");
+            System.out.println("Client: " + inputLine);
         }
+
         
         System.out.println("Server OUT");
     }
     
+    public void closeConnection() throws IOException
+    {
+    	this.serverSocket.close();
+    	this.out.close();
+    	this.in.close();
+    }
+    
     public static void main(String[] args) throws IOException {
-        if (args.length != 1) {
-            System.err.println("Usage: java Server <port number>");
-            System.exit(1);
-        }
+    	int portNumber = 8888;
+        ServerSocket serverSocket;
+        PrintWriter out;
+        BufferedReader in;
 
-        int portNumber = Integer.parseInt(args[0]);
+
         System.out.println("Server IN");
-        try (
-                ServerSocket serverSocket = new ServerSocket(portNumber);
-                Socket clientSocket = serverSocket.accept();
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                ) {
-            String inputLine, outputLine;
-            System.out.println("Server opened");
 
-            // initiate conversation with client
-//            CsProtocol csp = new CsProtocol();
-            boolean close = false;
-            
-            while ((inputLine = in.readLine()) != null) {
-                if (inputLine == "close") {
-                    close = true;
-                }
-                out.println("Client said: " + inputLine + " and this is the server responding");
-                System.out.println("Client: " + inputLine);
-            }
-            
-            
+    	serverSocket = new ServerSocket(portNumber);
+        Socket clientSocket = serverSocket.accept();
+        out = new PrintWriter(clientSocket.getOutputStream(), true);
+        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        
+        String inputLine, outputLine;
 
-
-//            while ((inputLine = in.readLine()) != null) {
-//                outputLine = csp.processInput(inputLine);
-//                out.println(outputLine);
-//                if (outputLine.equals("Bye."))
-//                    break;
-//            }
-
+        while ((inputLine = in.readLine()) != null) {
+            out.println("Client said: " + inputLine + " and this is the server responding");
+            System.out.println("Client: " + inputLine);
         }
-        System.out.println("Server OUT");
+
+       
     }
 
 }

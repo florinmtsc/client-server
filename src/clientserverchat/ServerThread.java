@@ -1,33 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package clientserverchat;
 
-import java.util.concurrent.TimeUnit;
+class ServerThread extends Thread {
+    long minPrime;
+    CServer server;
+    
+    ServerThread(long minPrime) {
+        this.minPrime = minPrime;
+    }
 
-/**
- *
- * @author flori
- */
-public class ServerThread extends Thread {
-    
-    public CServer server;
-    
     public void run() {
-        this.server = new CServer("5555");
-        this.server.connect();
-        
-//        try {
-//            TimeUnit.SECONDS.sleep(1);
-//        } catch(InterruptedException ex) {
-//            Thread.currentThread().interrupt();
-//        }
+        this.server = new CServer();
+        this.connect(7777);
     }
-
-    public static void main(String args[]) {
-//        (new HelloThread()).start();
-    }
-    
 }

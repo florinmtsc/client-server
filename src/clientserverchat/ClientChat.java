@@ -5,12 +5,10 @@
  */
 package clientserverchat;
 
+import java.awt.HeadlessException;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-/**
- *
- * @author flori
- */
 public class ClientChat extends javax.swing.JDialog {
 
     public CClient client;
@@ -18,9 +16,11 @@ public class ClientChat extends javax.swing.JDialog {
     
     /**
      * Creates new form ClientChat
+     * @throws IOException 
      */
-    public ClientChat(java.awt.Frame parent, boolean modal) {
+    public ClientChat(java.awt.Frame parent, boolean modal) throws IOException {
         super(parent, modal);
+        this.client = new CClient("192.168.1.37", "8888");
         initComponents();
     }
 
@@ -58,7 +58,12 @@ public class ClientChat extends javax.swing.JDialog {
         jButton1.setText("SEND");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                try {
+					jButton1ActionPerformed(evt);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
 
@@ -107,13 +112,10 @@ public class ClientChat extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_clientInputTextActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) throws IOException {//GEN-FIRST:event_jButton1ActionPerformed
         String text = clientInputText.getText();
         
-//        this.server = new CServer("6666");
-//        this.server.connect();
         
-        this.client = new CClient("192.168.1.37", "5555");
         
         if ( text != "") {
             this.client.connect(text);
@@ -151,7 +153,13 @@ public class ClientChat extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ClientChat dialog = new ClientChat(new javax.swing.JFrame(), true);
+                ClientChat dialog = null;
+				try {
+					dialog = new ClientChat(new javax.swing.JFrame(), true);
+				} catch (HeadlessException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
