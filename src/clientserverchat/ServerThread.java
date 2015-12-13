@@ -9,7 +9,7 @@ class ServerThread extends Thread {
     }
 
     public void run() {
-        this.server = new CServer();
-        this.connect(7777);
+
+    	
     }
 }

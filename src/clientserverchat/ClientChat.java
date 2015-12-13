@@ -20,7 +20,8 @@ public class ClientChat extends javax.swing.JDialog {
      */
     public ClientChat(java.awt.Frame parent, boolean modal) throws IOException {
         super(parent, modal);
-        this.client = new CClient("192.168.1.37", "8888");
+        this.client = new CClient("192.168.1.37", "8888");//my ip
+//        this.client = new CClient("192.168.43.205", "8888");
         initComponents();
     }
 
